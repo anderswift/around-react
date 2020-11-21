@@ -8,7 +8,7 @@
 	width: 100%;
 	left: 0;
   height: 100%;
-  display: none; /* required or hidden items flash on page while loading */
+  display: flex; 
   visibility: hidden;
   opacity: 0;
 	transition: opacity 0.2s ease-in, visibility .25s;
