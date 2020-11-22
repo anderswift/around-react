@@ -1,8 +1,11 @@
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
-import api from '../utils/api.js';
+import {api} from '../utils/api.js';
 import avatar from '../images/avatar.png';
+import Card from './Card';
+
+
 
 function Main(props) {
   const handleEditAvatarClick= props.onEditAvatar;
@@ -13,8 +16,30 @@ function Main(props) {
   const [userAbout, setUserAbout]= useState('');
   const [userAvatar, setUserAvatar]= useState(avatar);
 
-  return (
+  const [cards, setCards]= useState([]);
 
+
+
+  useEffect(() => {
+
+    api.getUserInfo().then((userData) => {
+      setUserName(userData.name);
+      setUserAbout(userData.about);
+      setUserAvatar(userData.avatar);
+      return userData._id; 
+    })
+    .then((userId) => {
+      return api.getInitialCards().then(setCards);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  });
+  
+
+
+  return (
     <main>
           
       <section className="profile">
@@ -31,14 +56,17 @@ function Main(props) {
       </section>
 
       
-      
       <section className="photo-grid">
         <ul className="photo-grid__list list">
+
+          {cards.map(card => (
+            <Card card={card} onCardClick={props.onCardClick} />
+          ))}
+
         </ul>
       </section>
 
     </main>
-        
   );
 }
 
