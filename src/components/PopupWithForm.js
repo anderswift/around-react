@@ -12,8 +12,6 @@ function PopupWithForm(props) {
         <button type="reset" className="popup__exit button" aria-label="Close"></button>
       </form>
     </div>
-    
-
   );
 }
 
