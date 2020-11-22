@@ -1,21 +1,9 @@
 import avatar from '../images/avatar.png';
 
-function Main() {
-
-  const handleEditAvatarClick= () => {
-    const popup= document.querySelector('.modal_form_avatar').parentElement;
-    popup.classList.add('popup_active');
-  }
-
-  const handleEditProfileClick= () => {
-    const popup= document.querySelector('.modal_form_profile').parentElement;
-    popup.classList.add('popup_active');
-  }
-
-  const handleAddPlaceClick= () => {
-    const popup= document.querySelector('.modal_form_photo').parentElement;
-    popup.classList.add('popup_active');
-  }
+function Main(props) {
+  const handleEditAvatarClick= props.onEditAvatar;
+  const handleEditProfileClick= props.onEditProfile; 
+  const handleAddPlaceClick= props.onAddPlace; 
 
 
   return (

@@ -9,8 +9,8 @@ function FormField(props) {
         className={`modal__input modal__input_type_${props.name}`} 
         aria-label={props.label} 
         placeholder={props.label} 
-        minLength={props.minMax !== undefined && props.minMax[0]}
-        maxLength={props.minMax !== undefined && props.minMax[1]} 
+        minLength={props.minMax ? props.minMax[0] : undefined}
+        maxLength={props.minMax ? props.minMax[1] : undefined} 
         required />
       <span className="modal__error" id={`${props.name}-error`}></span>
     </>
