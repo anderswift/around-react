@@ -6,7 +6,7 @@ import Card from './Card';
 
 
 
-function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
+function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick, onDeleteClick}) {
 
   const [userName, setUserName]= useState('');
   const [userAbout, setUserAbout]= useState('');
@@ -63,7 +63,7 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
         <ul className="photo-grid__list list">
 
           {cards.map(card => (
-            <Card card={card} key={card._id} onCardClick={onCardClick} currentUserId={userId} />
+            <Card card={card} key={card._id} currentUserId={userId} onCardClick={onCardClick} onDeleteClick={onDeleteClick}  />
           ))}
 
         </ul>

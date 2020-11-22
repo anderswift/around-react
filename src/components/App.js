@@ -40,6 +40,11 @@ function App() {
     showImagePopup(true);
   }
 
+  const handleCardDelete= (card) => {
+    selectCard(card);
+    showDeletePlacePopup(true);
+  }
+
 
 
   return (
@@ -52,6 +57,7 @@ function App() {
           onEditProfile={handleEditProfileClick} 
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
+          onDeleteClick={handleCardDelete}
         />
         
         <Footer />

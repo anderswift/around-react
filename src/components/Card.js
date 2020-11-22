@@ -2,14 +2,18 @@ import {useState, useEffect} from 'react';
 import {api} from '../utils/api.js';
 
 
-function Card({card, currentUserId, onCardClick}) {
+function Card({card, currentUserId, onCardClick, onDeleteClick}) {
 
   const currentUserOwns= card.owner._id === currentUserId;
   const [currentUserLikes, toggleUserLike]= useState(card.likes.map(user => user._id).includes(currentUserId));
 
   const handleClick= () => {
     onCardClick(card);
-  }  
+  }
+  
+  const handleDeleteClick= () => {
+    onDeleteClick(card);
+  }
 
   const handleLikeClick= (e) => {
     e.preventDefault();
@@ -35,7 +39,7 @@ function Card({card, currentUserId, onCardClick}) {
           <span className="photo__like-count">{card.likes.length}</span>
         </button>
       </div>
-      {currentUserOwns && <button type="reset" className="photo__delete button" aria-label="Delete"></button>}
+      {currentUserOwns && <button type="reset" className="photo__delete button" aria-label="Delete" onClick={handleDeleteClick}></button>}
     </li>
   );
 }
