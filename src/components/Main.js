@@ -1,6 +1,5 @@
 
 import {useState, useEffect} from 'react';
-
 import {api} from '../utils/api.js';
 import avatar from '../images/avatar.png';
 import Card from './Card';
@@ -20,23 +19,24 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
 
   useEffect(() => {
 
-    api.getUserInfo().then((userData) => {
-      setUserName(userData.name);
-      setUserAbout(userData.about);
-      setUserAvatar(userData.avatar);
-      setUserId(userData._id);
-      return userData._id; 
-    })
-    .then((userId) => {
-      return api.getInitialCards()
-        .then(setCards)
-        .catch((err) => {
-          console.log(err);
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    api.getUserInfo()
+      .then((userData) => {
+        setUserName(userData.name);
+        setUserAbout(userData.about);
+        setUserAvatar(userData.avatar);
+        setUserId(userData._id);
+        return userData._id; 
+      })
+      .then((userId) => {
+        return api.getInitialCards()
+          .then(setCards)
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
   });
   
