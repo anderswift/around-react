@@ -12,6 +12,7 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
   const [userName, setUserName]= useState('');
   const [userAbout, setUserAbout]= useState('');
   const [userAvatar, setUserAvatar]= useState(avatar);
+  const [userId, setUserId]= useState(0);
 
   const [cards, setCards]= useState([]);
 
@@ -23,6 +24,7 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
       setUserName(userData.name);
       setUserAbout(userData.about);
       setUserAvatar(userData.avatar);
+      setUserId(userData._id);
       return userData._id; 
     })
     .then((userId) => {
@@ -61,7 +63,7 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
         <ul className="photo-grid__list list">
 
           {cards.map(card => (
-            <Card card={card} key={card._id} onCardClick={onCardClick} />
+            <Card card={card} key={card._id} onCardClick={onCardClick} currentUserId={userId} />
           ))}
 
         </ul>
