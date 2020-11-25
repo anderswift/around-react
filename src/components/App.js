@@ -74,10 +74,7 @@ function App() {
       </div>
       
       
-      <PopupWithForm heading="Edit profile" name="profile" submitText="Save" isOpen={isProfilePopupOpen} onClose={closeAllPopups}>
-        <FormField name="profile-name" label="Name" minMax={[2, 40]} />
-        <FormField name="profile-about" label="About me" minMax={[2, 200]} />
-      </PopupWithForm>
+      <EditProfilePopup isOpen={isProfilePopupOpen} onClose={closeAllPopups} />
 
       <PopupWithForm heading="Change profile picture" name="avatar" submitText="Save" isOpen={isAvatarPopupOpen} onClose={closeAllPopups}>
         <FormField name="profile-avatar" type="url" label="Image link" />
