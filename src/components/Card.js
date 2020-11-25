@@ -2,39 +2,24 @@ import {useState, useEffect} from 'react';
 import {api} from '../utils/api.js';
 
 
-function Card({card, currentUserId, onCardClick, onDeleteClick}) {
+function Card({card, currentUserId, onCardClick, onDeleteClick, onLikeClick}) {
 
   const currentUserOwns= card.owner._id === currentUserId;
-  const [currentUserLikes, toggleUserLike]= useState(card.likes.map(user => user._id).includes(currentUserId));
+  const currentUserLikes= card.likes.some(user => user._id === currentUserId);
 
-  const handleClick= () => {
-    onCardClick(card);
-  }
-  
-  const handleDeleteClick= () => {
-    onDeleteClick(card);
-  }
+  const handleClick= () => { onCardClick(card); }
+  const handleDeleteClick= () => { onDeleteClick(card._id); }
+  const handleLikeUnlike= () => { onLikeClick(card); }
 
-  const handleLikeClick= (e) => {
-    e.preventDefault();
-    api.updateLikes(card._id, !currentUserLikes)
-      .then((response) => {
-        toggleUserLike(!currentUserLikes);
-        e.target.blur();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
 
   return (
     <li className="photo" id={card._id}>
       <img className="photo__image" src={card.link} alt={card.name} onClick={handleClick} />
       <div className="photo__meta">
-        <h2 className="photo__caption">{card.name}</h2>
+  <h2 className="photo__caption">{Math.random()}{card.name}</h2>
         <button type="button" aria-label="Like"
           className={`photo__like button${currentUserLikes ? ' photo__like_on' : ''}`} 
-          onClick={handleLikeClick}
+          onClick={handleLikeUnlike}
         >
           <span className="photo__like-count">{card.likes.length}</span>
         </button>

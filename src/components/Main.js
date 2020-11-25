@@ -6,7 +6,7 @@ import Card from './Card';
 
 
 
-function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick, onDeleteClick}) {
+function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
 
   const [userName, setUserName]= useState('');
   const [userAbout, setUserAbout]= useState('');
@@ -38,7 +38,33 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick, onDeleteCli
         console.log(err);
       });
 
-  });
+  }, []);
+
+
+
+  const onLikeClick= (card) => {
+    const currentUserLikes= card.likes.some(user => user._id === userId);
+    api.updateLikes(card._id, !currentUserLikes)
+      .then((updatedCard) => {
+        const newCards = cards.map((c) => c._id === card._id ? updatedCard : c);  
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  const onDeleteClick= (cardId) => {
+    api.deleteCard(cardId)
+      .then((response) => {
+        console.log(response);
+        const newCards = cards.filter((card) => card._id !== cardId);  
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   
 
 
@@ -63,7 +89,7 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick, onDeleteCli
         <ul className="photo-grid__list list">
 
           {cards.map(card => (
-            <Card card={card} key={card._id} currentUserId={userId} onCardClick={onCardClick} onDeleteClick={onDeleteClick}  />
+            <Card card={card} key={card._id} currentUserId={userId} onCardClick={onCardClick} onDeleteClick={onDeleteClick} onLikeClick={onLikeClick} />
           ))}
 
         </ul>

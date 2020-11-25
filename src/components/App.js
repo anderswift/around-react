@@ -4,6 +4,7 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
+import DeleteForm from './DeleteForm';
 import FormField from './FormField';
 import PopupWithImage from './PopupWithImage';
 
@@ -40,11 +41,6 @@ function App() {
     showImagePopup(true);
   }
 
-  const handleCardDelete= (card) => {
-    selectCard(card);
-    showDeletePlacePopup(true);
-  }
-
 
 
   return (
@@ -57,7 +53,6 @@ function App() {
           onEditProfile={handleEditProfileClick} 
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
-          onDeleteClick={handleCardDelete}
         />
         
         <Footer />
@@ -78,9 +73,8 @@ function App() {
         <FormField name="photo-link" type="url" label="Image link" />
       </PopupWithForm>    
 
-      <PopupWithForm heading="Are you sure?" name="delete" submitText="Yes" isOpen={isDeletePlacePopupOpen} onClose={closeAllPopups}>
-        <input type="hidden" name="delete-id" id="delete-id" className="modal__input modal__input_type_delete" required />
-      </PopupWithForm>
+      <DeleteForm isOpen={isDeletePlacePopupOpen} onClose={closeAllPopups} cardId={selectedCard._id} />
+
 
       <PopupWithImage isOpen={isImagePopupOpen} onClose={closeAllPopups} card={selectedCard} />
       
