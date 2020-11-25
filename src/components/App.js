@@ -1,4 +1,7 @@
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
+import {api} from '../utils/api.js';
+
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 import Header from './Header';
 import Main from './Main';
@@ -12,13 +15,15 @@ import PopupWithImage from './PopupWithImage';
 
 function App() {
 
+  const [currentUser, setCurrentUser]= useState({});
+
+  const [selectedCard, selectCard]= useState({});
+
   const [isProfilePopupOpen, showProfilePopup]= useState(false);
   const [isAvatarPopupOpen, showAvatarPopup]= useState(false);
   const [isAddPlacePopupOpen, showAddPlacePopup]= useState(false);
   const [isDeletePlacePopupOpen, showDeletePlacePopup]= useState(false);
   const [isImagePopupOpen, showImagePopup]= useState(false);
-
-  const [selectedCard, selectCard]= useState({});
   
 
 
@@ -42,9 +47,19 @@ function App() {
   }
 
 
+  useEffect(() => {
+    api.getUserInfo()
+      .then((user) => {
+        setCurrentUser(user);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
 
   return (
-    <>
+    <CurrentUserContext.Provider value={currentUser}>
       <div className="container">
         <Header />
         
@@ -78,7 +93,7 @@ function App() {
 
       <PopupWithImage isOpen={isImagePopupOpen} onClose={closeAllPopups} card={selectedCard} />
       
-    </>
+    </CurrentUserContext.Provider>
   );
 }
 
