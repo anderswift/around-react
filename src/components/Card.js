@@ -1,14 +1,10 @@
-import {useState, useEffect} from 'react';
-import {api} from '../utils/api.js';
-
-
 function Card({card, currentUserId, onCardClick, onDeleteClick, onLikeClick}) {
 
   const currentUserOwns= card.owner._id === currentUserId;
   const currentUserLikes= card.likes.some(user => user._id === currentUserId);
 
   const handleClick= () => { onCardClick(card); }
-  const handleDeleteClick= () => { onDeleteClick(card._id); }
+  const handleDeleteClick= () => { onDeleteClick(card); }
   const handleLikeUnlike= () => { onLikeClick(card); }
 
 
@@ -16,7 +12,7 @@ function Card({card, currentUserId, onCardClick, onDeleteClick, onLikeClick}) {
     <li className="photo" id={card._id}>
       <img className="photo__image" src={card.link} alt={card.name} onClick={handleClick} />
       <div className="photo__meta">
-  <h2 className="photo__caption">{Math.random()}{card.name}</h2>
+  <h2 className="photo__caption">{card.name}</h2>
         <button type="button" aria-label="Like"
           className={`photo__like button${currentUserLikes ? ' photo__like_on' : ''}`} 
           onClick={handleLikeUnlike}

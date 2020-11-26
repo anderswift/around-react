@@ -1,5 +1,7 @@
 function PopupWithForm(props) {
 
+
+
   return (
     <div className={`popup ${props.isOpen ? 'popup_active' : ''}`}>
       <form name={`${props.name}-form`} className={`popup__item modal modal_form_${props.name}`} onSubmit={props.onSubmit}>

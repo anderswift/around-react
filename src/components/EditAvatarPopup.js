@@ -12,6 +12,7 @@ function EditAvatarPopup({isOpen, onClose, onSubmit}) {
   const currentUser= useContext(CurrentUserContext);
   const [avatar, setAvatar]= useState('');
 
+  const [saving, setSaving]= useState(false);
 
 
   function handleAvatarChange(e) {
@@ -20,7 +21,8 @@ function EditAvatarPopup({isOpen, onClose, onSubmit}) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmit({avatar: avatar});
+    setSaving(true);
+    onSubmit({avatar: avatar}, () => { setTimeout(() => { setSaving(false); }, 200); });
   }
 
 
@@ -32,7 +34,7 @@ function EditAvatarPopup({isOpen, onClose, onSubmit}) {
 
   
   return (
-    <PopupWithForm heading="Change profile picture" name="avatar" submitText="Save" isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
+    <PopupWithForm heading="Change profile picture" name="avatar" submitText={saving ? 'Saving...' : 'Save'} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
       <FormField name="profile-avatar" type="url" label="Image link" defaultValue={avatar} handleChange={handleAvatarChange} />
     </PopupWithForm>
   );

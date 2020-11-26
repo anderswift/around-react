@@ -8,11 +8,11 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 
-import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
-import DeleteForm from './DeleteForm';
-import FormField from './FormField';
+import AddPlacePopup from './AddPlacePopup';
+import DeletePlacePopup from './DeletePlacePopup';
+
 
 import PopupWithImage from './PopupWithImage';
 
@@ -51,8 +51,49 @@ function App() {
     showImagePopup(true);
   }
 
+  const handleDeleteClick= (card) => {
+    selectCard(card);
+    showDeletePlacePopup(true);
+  }
+
   
 
+  const updateProfile= (userData, onCompletion) => {
+    api.setUserInfo(userData)
+    .then((user) => {
+      setCurrentUser(user);
+      closeAllPopups();
+      onCompletion();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  const updateAvatar= (avatarData, onCompletion) => {
+    api.setUserAvatar(avatarData)
+    .then((user) => {
+      setCurrentUser(user);
+      closeAllPopups();
+      onCompletion();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    
+  }
+
+  const addCard= (cardData, onCompletion) => {
+    api.addCard(cardData)
+    .then((newCard) => {
+      setCards([newCard, ...cards]);
+      closeAllPopups();
+      onCompletion();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
 
   const likeUnlikeCard= (card) => {
     const currentUserLikes= card.likes.some(user => user._id === currentUser._id);
@@ -66,41 +107,21 @@ function App() {
       });
   }
 
-  const deleteCard= (cardId) => {
+  const deleteCard= (cardId, onCompletion) => {
     api.deleteCard(cardId)
-      .then((response) => {
-        const newCards = cards.filter((card) => card._id !== cardId);  
-        setCards(newCards);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  const updateProfile= (userData) => {
-    api.setUserInfo(userData)
-    .then((user) => {
-      setCurrentUser(user);
+    .then((response) => {
+      const newCards = cards.filter((card) => card._id !== cardId);  
+      setCards(newCards);
+      closeAllPopups();
+      onCompletion();
     })
     .catch((err) => {
       console.log(err);
     });
-    closeAllPopups();
-  }
-
-  const updateAvatar= (avatarData) => {
-    api.setUserAvatar(avatarData)
-    .then((user) => {
-      setCurrentUser(user);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-    closeAllPopups();
   }
 
 
-  
+
   useEffect(() => {
     api.getUserInfo()
     .then((user) => {
@@ -131,7 +152,7 @@ function App() {
           onEditProfile={handleEditProfileClick} 
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
-          onDeleteClick={deleteCard}
+          onDeleteClick={handleDeleteClick}
           onLikeClick={likeUnlikeCard}
         />
         
@@ -140,16 +161,9 @@ function App() {
       
       
       <EditProfilePopup isOpen={isProfilePopupOpen} onClose={closeAllPopups} onSubmit={updateProfile} />
-
       <EditAvatarPopup isOpen={isAvatarPopupOpen} onClose={closeAllPopups} onSubmit={updateAvatar} />
-
-      <PopupWithForm heading="New place" name="photo" submitText="Create" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
-        <FormField name="photo-name" label="Title" minMax={[2, 30]} />
-        <FormField name="photo-link" type="url" label="Image link" />
-      </PopupWithForm>    
-
-      <DeleteForm isOpen={isDeletePlacePopupOpen} onClose={closeAllPopups} cardId={selectedCard._id} />
-
+      <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={addCard} />
+      <DeletePlacePopup isOpen={isDeletePlacePopupOpen} onClose={closeAllPopups} onSubmit={deleteCard} cardId={selectedCard._id} />
 
       <PopupWithImage isOpen={isImagePopupOpen} onClose={closeAllPopups} card={selectedCard} />
       
@@ -158,3 +172,4 @@ function App() {
 }
 
 export default App;
+
