@@ -3,7 +3,6 @@ import {useState, useEffect, useContext} from 'react';
 import {api} from '../utils/api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-import avatar from '../images/avatar.png';
 import Card from './Card';
 
 
@@ -11,10 +10,7 @@ import Card from './Card';
 function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
 
   const currentUser = useContext(CurrentUserContext);
-  console.log(currentUser);
-
   const [cards, setCards]= useState([]);
-
 
 
   useEffect(() => {

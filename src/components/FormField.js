@@ -1,5 +1,7 @@
+import { useState } from 'react';
+
 function FormField(props) {
-  
+
   return (
     <>
       <input 
@@ -11,6 +13,8 @@ function FormField(props) {
         placeholder={props.label} 
         minLength={props.minMax ? props.minMax[0] : undefined}
         maxLength={props.minMax ? props.minMax[1] : undefined} 
+        defaultValue={props.defaultValue} 
+        onChange={props.handleChange}
         required />
       <span className="modal__error" id={`${props.name}-error`}></span>
     </>
