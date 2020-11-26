@@ -21,7 +21,7 @@ import PopupWithImage from './PopupWithImage';
 function App() {
 
   const [currentUser, setCurrentUser]= useState({avatar: avatar});
-
+  const [cards, setCards]= useState([]);
   const [selectedCard, selectCard]= useState({});
 
   const [isProfilePopupOpen, showProfilePopup]= useState(false);
@@ -49,6 +49,32 @@ function App() {
   const handleCardClick= (card) => {
     selectCard(card);
     showImagePopup(true);
+  }
+
+  
+
+
+  const likeUnlikeCard= (card) => {
+    const currentUserLikes= card.likes.some(user => user._id === currentUser._id);
+    api.updateLikes(card._id, !currentUserLikes)
+      .then((updatedCard) => {
+        const newCards = cards.map((c) => c._id === card._id ? updatedCard : c);  
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  const deleteCard= (cardId) => {
+    api.deleteCard(cardId)
+      .then((response) => {
+        const newCards = cards.filter((card) => card._id !== cardId);  
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   const updateProfile= (userData) => {
@@ -85,7 +111,14 @@ function App() {
     });
   }, []);
 
-
+  useEffect(() => {
+    if(!currentUser) return;
+    api.getInitialCards()
+      .then(setCards)
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [currentUser]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -93,10 +126,13 @@ function App() {
         <Header />
         
         <Main 
+          cards={cards}
           onEditAvatar={handleEditAvatarClick} 
           onEditProfile={handleEditProfileClick} 
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
+          onDeleteClick={deleteCard}
+          onLikeClick={likeUnlikeCard}
         />
         
         <Footer />
