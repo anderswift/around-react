@@ -11,7 +11,7 @@ function EditProfilePopup({isOpen, isSaving, onClose, onSubmit}) {
 
   const currentUser= useContext(CurrentUserContext);
 
-  const [values, setValues]= useState({});
+  const [values, setValues]= useState({ name: '', about: '' });
   const [errors, setErrors]= useState({});
   const [submitReady, setSubmitReady]= useState(false);
 
@@ -45,7 +45,7 @@ function EditProfilePopup({isOpen, isSaving, onClose, onSubmit}) {
   
   useEffect(() => { 
     setValues({ name: currentUser.name, about: currentUser.about });
-    setSubmitReady(false); // so as to block submission until user has changed something
+    setSubmitReady(true); // so as to block submission until user has changed something
   }, [currentUser]); 
   
 
@@ -55,8 +55,8 @@ function EditProfilePopup({isOpen, isSaving, onClose, onSubmit}) {
     <PopupWithForm heading="Edit profile" name="profile" isOpen={isOpen} onClose={onClose} onReset={handleReset}
       submitText={isSaving ? 'Saving...' : 'Save'} submitReady={submitReady} onSubmit={handleSubmit}>
 
-      <FormField name="profile-name" label="Name" minMax={[2, 40]} handleChange={handleChange} defaultValue={values.name} error={errors.name} />
-      <FormField name="profile-about" label="About me" minMax={[2, 200]} handleChange={handleChange} defaultValue={values.about} error={errors.about}  />
+      <FormField name="profile-name" label="Name" minMax={[2, 40]} handleChange={handleChange} value={values.name} error={errors.name} />
+      <FormField name="profile-about" label="About me" minMax={[2, 200]} handleChange={handleChange} value={values.about} error={errors.about}  />
     
     </PopupWithForm>
   );

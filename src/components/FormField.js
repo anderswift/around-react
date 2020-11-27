@@ -11,7 +11,7 @@ function FormField(props) {
         placeholder={props.label} 
         minLength={props.minMax ? props.minMax[0] : undefined}
         maxLength={props.minMax ? props.minMax[1] : undefined} 
-        defaultValue={props.defaultValue} 
+        value={props.value} 
         onChange={props.handleChange}
         required />
       <span className={`modal__error${props.error && ' modal__error_active'}`} id={`${props.name}-error`}>{props.error}</span>

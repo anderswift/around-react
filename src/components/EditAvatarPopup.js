@@ -41,7 +41,7 @@ function EditAvatarPopup({isOpen, isSaving, onClose, onSubmit}) {
 
   useEffect(() => { 
     setAvatar(currentUser.avatar);
-    setSubmitReady(false); // so as to block submission until user has changed something
+    setSubmitReady(true); 
   }, [currentUser]); 
 
 
@@ -50,7 +50,7 @@ function EditAvatarPopup({isOpen, isSaving, onClose, onSubmit}) {
     <PopupWithForm heading="Change profile picture" name="avatar" isOpen={isOpen} onClose={onClose} onReset={handleReset}
       submitText={isSaving ? 'Saving...' : 'Save'} submitReady={submitReady} onSubmit={handleSubmit}>
 
-      <FormField name="profile-avatar" type="url" label="Image link" defaultValue={avatar} handleChange={handleChange} error={error} />
+      <FormField name="profile-avatar" type="url" label="Image link" value={avatar} handleChange={handleChange} error={error} />
 
     </PopupWithForm>
   );
