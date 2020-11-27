@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import {api} from '../utils/api.js';
+import { api } from '../utils/api.js';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import avatar from '../images/avatar.png';
+import avatar from '../images/avatar.png'; // default avatar (black 1 pixel)
 
 import Header from './Header';
 import Main from './Main';
@@ -23,6 +23,7 @@ function App() {
   const [currentUser, setCurrentUser]= useState({avatar: avatar});
   const [cards, setCards]= useState([]);
   const [selectedCard, selectCard]= useState({});
+  const [isSaving, setIsSaving]= useState(false);
 
   const [isProfilePopupOpen, showProfilePopup]= useState(false);
   const [isAvatarPopupOpen, showAvatarPopup]= useState(false);
@@ -32,9 +33,9 @@ function App() {
 
 
 
-  const handleEditAvatarClick= () => { showAvatarPopup(true); }
-  const handleEditProfileClick= () => { showProfilePopup(true); }
-  const handleAddPlaceClick= () => { showAddPlacePopup(true); }
+  const handleEditAvatarClick= () => { showAvatarPopup(true); setListener(true); }
+  const handleEditProfileClick= () => { showProfilePopup(true); setListener(true); }
+  const handleAddPlaceClick= () => { showAddPlacePopup(true); setListener(true); }
 
   const closeAllPopups= () => {
     showAvatarPopup(false);
@@ -43,80 +44,110 @@ function App() {
     showDeletePlacePopup(false);
 
     showImagePopup(false);
-    selectCard({});
+    setTimeout(() => { selectCard({}); }, 200); // wait until fade animation completes before removing selected card data
+    
+    setListener(false);
+  }
+
+  const closeOnEsc= (e) => { 
+    if(e.key === 'Escape') { 
+      closeAllPopups(); 
+
+      // wasn't sure how else to do this, without DOM query? But form should reset here, as it does when pressing x button to close
+      document.querySelector('.popup_active .modal').reset(); 
+    }
+  }
+
+  const setListener= (listen) => {
+    listen ?
+      document.addEventListener('keyup', closeOnEsc) :
+      document.removeEventListener('keyup', closeOnEsc);
   }
 
   const handleCardClick= (card) => {
     selectCard(card);
     showImagePopup(true);
+    setListener(true);
   }
 
   const handleDeleteClick= (card) => {
     selectCard(card);
     showDeletePlacePopup(true);
+    setListener(true);
   }
 
   
 
-  const updateProfile= (userData, onCompletion) => {
+  const updateProfile= (userData) => {
+    setIsSaving(true);
     api.setUserInfo(userData)
     .then((user) => {
       setCurrentUser(user);
       closeAllPopups();
-      onCompletion();
+      setTimeout(() => { setIsSaving(false); }, 200); // wait until fade animation completes to reset button text
     })
     .catch((err) => {
       console.log(err);
+      setIsSaving(false);
     });
   }
 
-  const updateAvatar= (avatarData, onCompletion) => {
+  const updateAvatar= (avatarData) => {
+    setIsSaving(true);
     api.setUserAvatar(avatarData)
     .then((user) => {
       setCurrentUser(user);
       closeAllPopups();
-      onCompletion();
+      setTimeout(() => { setIsSaving(false); }, 200);
     })
     .catch((err) => {
       console.log(err);
+      setIsSaving(false);
     });
     
   }
 
-  const addCard= (cardData, onCompletion) => {
+  const addCard= (cardData, e) => {
+    setIsSaving(true);
     api.addCard(cardData)
     .then((newCard) => {
       setCards([newCard, ...cards]);
       closeAllPopups();
-      onCompletion();
+      setTimeout(() => { setIsSaving(false); }, 200);
+      e.target.reset(); // empty the form
     })
     .catch((err) => {
       console.log(err);
+      setIsSaving(false);
     });
   }
 
-  const likeUnlikeCard= (card) => {
+  const likeUnlikeCard= (card, likeButtonRef) => {
     const currentUserLikes= card.likes.some(user => user._id === currentUser._id);
     api.updateLikes(card._id, !currentUserLikes)
       .then((updatedCard) => {
         const newCards = cards.map((c) => c._id === card._id ? updatedCard : c);  
         setCards(newCards);
+        console.log(likeButtonRef);
+        likeButtonRef.current.blur(); // prevents button from staying selected and highlighted after action completes
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  const deleteCard= (cardId, onCompletion) => {
+  const deleteCard= (cardId) => {
+    setIsSaving(true);
     api.deleteCard(cardId)
     .then((response) => {
       const newCards = cards.filter((card) => card._id !== cardId);  
       setCards(newCards);
       closeAllPopups();
-      onCompletion();
+      setTimeout(() => { setIsSaving(false); }, 200);
     })
     .catch((err) => {
       console.log(err);
+      setIsSaving(false);
     });
   }
 
@@ -141,9 +172,14 @@ function App() {
       });
   }, [currentUser]);
 
+
+
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
+
       <div className="container">
+
         <Header />
         
         <Main 
@@ -157,18 +193,20 @@ function App() {
         />
         
         <Footer />
+
       </div>
       
       
-      <EditProfilePopup isOpen={isProfilePopupOpen} onClose={closeAllPopups} onSubmit={updateProfile} />
-      <EditAvatarPopup isOpen={isAvatarPopupOpen} onClose={closeAllPopups} onSubmit={updateAvatar} />
-      <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={addCard} />
-      <DeletePlacePopup isOpen={isDeletePlacePopupOpen} onClose={closeAllPopups} onSubmit={deleteCard} cardId={selectedCard._id} />
+      <EditProfilePopup isOpen={isProfilePopupOpen} onClose={closeAllPopups} onSubmit={updateProfile} isSaving={isSaving} />
+      <EditAvatarPopup isOpen={isAvatarPopupOpen} onClose={closeAllPopups} onSubmit={updateAvatar} isSaving={isSaving} />
+      <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={addCard} isSaving={isSaving} />
+      <DeletePlacePopup isOpen={isDeletePlacePopupOpen} onClose={closeAllPopups} onSubmit={deleteCard} cardId={selectedCard._id} isSaving={isSaving} />
 
       <PopupWithImage isOpen={isImagePopupOpen} onClose={closeAllPopups} card={selectedCard} />
       
     </CurrentUserContext.Provider>
   );
+
 }
 
 export default App;

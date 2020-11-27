@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 function FormField(props) {
 
   return (
@@ -8,7 +6,7 @@ function FormField(props) {
         type={props.type === undefined ? 'text' : props.type} 
         name={props.name}
         id={props.name} 
-        className={`modal__input modal__input_type_${props.name}`} 
+        className={`modal__input modal__input_type_${props.name}${props.error && ' modal__input_type_error'}`} 
         aria-label={props.label} 
         placeholder={props.label} 
         minLength={props.minMax ? props.minMax[0] : undefined}
@@ -16,7 +14,7 @@ function FormField(props) {
         defaultValue={props.defaultValue} 
         onChange={props.handleChange}
         required />
-      <span className="modal__error" id={`${props.name}-error`}></span>
+      <span className={`modal__error${props.error && ' modal__error_active'}`} id={`${props.name}-error`}>{props.error}</span>
     </>
   );
 }

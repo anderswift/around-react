@@ -5,37 +5,53 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import PopupWithForm from './PopupWithForm';
 import FormField from './FormField';
 
+/* 
+ * Note to reviewer: I really didn't want to use ref here, as it messes up my form validation code and doesn't work with my FormField component, 
+ * plus this is not an ideal use case anyway. Please see Card component for a ref example -- used there to remove focus from button after like.  
+ */
 
-
-function EditAvatarPopup({isOpen, onClose, onSubmit}) {
+function EditAvatarPopup({isOpen, isSaving, onClose, onSubmit}) {
 
   const currentUser= useContext(CurrentUserContext);
+
   const [avatar, setAvatar]= useState('');
+  const [error, setError]= useState('');
+  const [submitReady, setSubmitReady]= useState(false);
 
-  const [saving, setSaving]= useState(false);
 
 
-  function handleAvatarChange(e) {
+  function handleChange(e) {
     setAvatar(e.target.value);
-  }
+    setError(e.target.validity.valid ? '' : e.target.validationMessage);
+    setSubmitReady(e.target.validity.valid);
+  } 
 
   function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    onSubmit({avatar: avatar}, () => { setTimeout(() => { setSaving(false); }, 200); });
+    onSubmit({avatar: avatar});
+  }
+
+  function handleReset() {
+    setAvatar(currentUser.avatar);
+    setError('');
+    setSubmitReady(true);
   }
 
 
 
-  useEffect(() => {
+  useEffect(() => { 
     setAvatar(currentUser.avatar);
+    setSubmitReady(false); // so as to block submission until user has changed something
   }, [currentUser]); 
 
 
   
   return (
-    <PopupWithForm heading="Change profile picture" name="avatar" submitText={saving ? 'Saving...' : 'Save'} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
-      <FormField name="profile-avatar" type="url" label="Image link" defaultValue={avatar} handleChange={handleAvatarChange} />
+    <PopupWithForm heading="Change profile picture" name="avatar" isOpen={isOpen} onClose={onClose} onReset={handleReset}
+      submitText={isSaving ? 'Saving...' : 'Save'} submitReady={submitReady} onSubmit={handleSubmit}>
+
+      <FormField name="profile-avatar" type="url" label="Image link" defaultValue={avatar} handleChange={handleChange} error={error} />
+
     </PopupWithForm>
   );
   

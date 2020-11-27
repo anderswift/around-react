@@ -1,19 +1,17 @@
-
-import { useState } from 'react';
 import PopupWithForm from './PopupWithForm';
 
-function DeletePlacePopup({isOpen, onClose, cardId, onSubmit}) {
-
-  const [saving, setSaving]= useState(false);
+function DeletePlacePopup({isOpen, isSaving, onClose, cardId, onSubmit}) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    onSubmit(cardId, () => { setTimeout(() => { setSaving(false); }, 200); });
+    onSubmit(cardId);
   }
 
+
+
   return (
-    <PopupWithForm heading="Are you sure?" name="delete" submitText={saving? 'Saving...' : 'Yes'} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} />
+    <PopupWithForm heading="Are you sure?" name="delete" isOpen={isOpen} onClose={onClose}
+      submitReady={true} submitText={isSaving ? 'Saving...' : 'Yes'} onSubmit={handleSubmit} />
   );
   
 }

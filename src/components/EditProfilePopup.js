@@ -7,43 +7,57 @@ import FormField from './FormField';
 
 
 
-function EditProfilePopup({isOpen, onClose, onSubmit}) {
+function EditProfilePopup({isOpen, isSaving, onClose, onSubmit}) {
 
   const currentUser= useContext(CurrentUserContext);
-  const [name, setName]= useState('');
-  const [about, setAbout]= useState('');
 
-  const [saving, setSaving]= useState(false);
+  const [values, setValues]= useState({});
+  const [errors, setErrors]= useState({});
+  const [submitReady, setSubmitReady]= useState(false);
 
 
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
-
-  function handleAboutChange(e) {
-    setAbout(e.target.value);
-  }
+  
+  function handleChange(e) {
+    const name= e.target.name.split('-').pop();
+    setValues({...values, [name]: e.target.value });
+    if(e.target.validity.valid) {
+      const updatedErrors= {...errors, [name]: '' }
+      setErrors(updatedErrors);
+      setSubmitReady(!Object.values(updatedErrors).some(i => i)); // enable submit if no error messages
+    } else {
+      setErrors({...errors, [name]: e.target.validationMessage });
+      setSubmitReady(false);
+    }
+  } 
 
   function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    onSubmit({name: name, about: about}, () => { setTimeout(() => { setSaving(false); }, 200); });
+    onSubmit(values);
+  }
+
+  const handleReset= () => {
+    setValues({ name: currentUser.name, about: currentUser.about });
+    setErrors({});
+    setSubmitReady(true);
   }
 
 
-
-  useEffect(() => {
-    setName(currentUser.name);
-    setAbout(currentUser.about);
+  
+  useEffect(() => { 
+    setValues({ name: currentUser.name, about: currentUser.about });
+    setSubmitReady(false); // so as to block submission until user has changed something
   }, [currentUser]); 
-
+  
 
 
   
   return (
-    <PopupWithForm heading="Edit profile" name="profile" submitText={saving ? 'Saving...' : 'Save'} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
-      <FormField name="profile-name" label="Name" minMax={[2, 40]} defaultValue={name} handleChange={handleNameChange} />
-      <FormField name="profile-about" label="About me" minMax={[2, 200]} defaultValue={about} handleChange={handleAboutChange}  />
+    <PopupWithForm heading="Edit profile" name="profile" isOpen={isOpen} onClose={onClose} onReset={handleReset}
+      submitText={isSaving ? 'Saving...' : 'Save'} submitReady={submitReady} onSubmit={handleSubmit}>
+
+      <FormField name="profile-name" label="Name" minMax={[2, 40]} handleChange={handleChange} defaultValue={values.name} error={errors.name} />
+      <FormField name="profile-about" label="About me" minMax={[2, 200]} handleChange={handleChange} defaultValue={values.about} error={errors.about}  />
+    
     </PopupWithForm>
   );
   

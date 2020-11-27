@@ -6,35 +6,47 @@ import FormField from './FormField';
 
 
 
-function AddPlacePopup({isOpen, onClose, onSubmit}) {
+function AddPlacePopup({isOpen, isSaving, onClose, onSubmit}) {
 
-  const [name, setName]= useState('');
-  const [link, setLink]= useState('');
-
-  const [saving, setSaving]= useState(false);
-
+  const [values, setValues]= useState({});
+  const [errors, setErrors]= useState({});
+  const [submitReady, setSubmitReady]= useState(false);
 
 
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
 
-  function handleLinkChange(e) {
-    setLink(e.target.value);
-  }
+  function handleChange(e) {
+    const name= e.target.name.split('-').pop();
+    setValues({...values, [name]: e.target.value });
+    if(e.target.validity.valid) {
+      const updatedErrors= {...errors, [name]: '' }
+      setErrors(updatedErrors);
+      const errorValues= Object.values(updatedErrors);
+      if(errorValues.length === 2) setSubmitReady(!errorValues.some(i => i)); // enable submit if both fields checked and no error messages
+    } else {
+      setErrors({...errors, [name]: e.target.validationMessage });
+      setSubmitReady(false);
+    }
+  } 
 
   function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    onSubmit({name: name, link: link}, () => { setTimeout(() => { setSaving(false); }, 200);  e.target.reset(); });
+    onSubmit(values, e);
+  }
+
+  function handleReset(e) {
+    setErrors({});
+    setSubmitReady(false);
   }
 
 
 
   return (
-    <PopupWithForm heading="New place" name="photo" submitText={saving? 'Saving...' : 'Create'} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
-      <FormField name="photo-name" label="Title" minMax={[2, 30]} handleChange={handleNameChange} />
-      <FormField name="photo-link" type="url" label="Image link" handleChange={handleLinkChange} />
+    <PopupWithForm heading="New place" name="photo" isOpen={isOpen} onClose={onClose} onReset={handleReset}
+      submitText={isSaving ? 'Saving...' : 'Create'} submitReady={submitReady} onSubmit={handleSubmit}>
+
+      <FormField name="photo-name" label="Title" minMax={[2, 30]} error={errors.name} handleChange={handleChange} />
+      <FormField name="photo-link" type="url" label="Image link" error={errors.link} handleChange={handleChange} />
+
     </PopupWithForm>
   );
 
