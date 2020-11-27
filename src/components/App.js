@@ -13,7 +13,6 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import DeletePlacePopup from './DeletePlacePopup';
 
-
 import PopupWithImage from './PopupWithImage';
 
 

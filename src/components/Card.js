@@ -1,5 +1,3 @@
-
-
 import { useRef } from 'react';
 
 function Card({card, currentUserId, onCardClick, onDeleteClick, onLikeClick}) {
