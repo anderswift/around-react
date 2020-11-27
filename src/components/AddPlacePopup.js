@@ -8,7 +8,7 @@ import FormField from './FormField';
 
 function AddPlacePopup({isOpen, isSaving, onClose, onSubmit}) {
 
-  const [values, setValues]= useState({});
+  const [values, setValues]= useState({ name: '', link: '' });
   const [errors, setErrors]= useState({});
   const [submitReady, setSubmitReady]= useState(false);
 

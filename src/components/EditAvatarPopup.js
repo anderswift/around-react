@@ -32,16 +32,16 @@ function EditAvatarPopup({isOpen, isSaving, onClose, onSubmit}) {
   }
 
   function handleReset() {
-    setAvatar(currentUser.avatar);
+    setAvatar(currentUser.avatar || ''); // prevent undefined value on controlled form field
     setError('');
-    setSubmitReady(true);
+    setSubmitReady(!!currentUser.avatar); // convert string to boolean to determine button state
   }
 
 
 
   useEffect(() => { 
-    setAvatar(currentUser.avatar);
-    setSubmitReady(true); 
+      setAvatar(currentUser.avatar || ''); // prevent undefined value on controlled form field
+      setSubmitReady(!!currentUser.avatar); // convert string to boolean to determine button state
   }, [currentUser]); 
 
 

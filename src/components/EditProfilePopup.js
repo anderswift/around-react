@@ -36,16 +36,18 @@ function EditProfilePopup({isOpen, isSaving, onClose, onSubmit}) {
   }
 
   const handleReset= () => {
-    setValues({ name: currentUser.name, about: currentUser.about });
+    setValues({ name: currentUser.name || '', about: currentUser.about || '' }); // prevent undefined value on controlled form field
     setErrors({});
-    setSubmitReady(true);
+    setSubmitReady(!!(currentUser.name && currentUser.about));
   }
 
 
   
   useEffect(() => { 
-    setValues({ name: currentUser.name, about: currentUser.about });
-    setSubmitReady(true); // so as to block submission until user has changed something
+    if(currentUser.name && currentUser.about) { 
+      setValues({ name: currentUser.name, about: currentUser.about }); // prevent undefined value on controlled form field
+      setSubmitReady(true);
+    }
   }, [currentUser]); 
   
 

@@ -19,7 +19,7 @@ import PopupWithImage from './PopupWithImage';
 
 function App() {
 
-  const [currentUser, setCurrentUser]= useState({avatar: avatar});
+  const [currentUser, setCurrentUser]= useState({name: '', about: '', avatar: avatar});
   const [cards, setCards]= useState([]);
   const [selectedCard, selectCard]= useState({});
   const [isSaving, setIsSaving]= useState(false);
