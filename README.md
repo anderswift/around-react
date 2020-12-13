@@ -1,5 +1,4 @@
 # "Around the U.S." with React
-## Project 10 of Yandex Practicum Web Development
 [View website online on Github Pages](https://anderswift.github.io/around-react/)
 
 ### Project Description:
@@ -15,4 +14,4 @@ This project has a responsive layout that displays a profile and photo gallery, 
 * Interactivity powered by React 
 
 
-This site was created based on a [mockup designed in Figma](https://www.figma.com/file/mUgu8OSHWE0M6p6vfwmdu9/Sprint-4-Around-The-U.S.-desktop-mobile?node-id=0%3A1) and was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This site is a project of Yandex's Practicum Web Development course. It was created based on a [mockup designed in Figma](https://www.figma.com/file/mUgu8OSHWE0M6p6vfwmdu9/Sprint-4-Around-The-U.S.-desktop-mobile?node-id=0%3A1) and was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
